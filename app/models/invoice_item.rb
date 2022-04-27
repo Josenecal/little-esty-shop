@@ -8,14 +8,17 @@ class InvoiceItem < ApplicationRecord
 
   belongs_to :item
   belongs_to :invoice
+  has_one :merchant, through: :item
+  has_many :bulk_discounts, through: :merchant
 
   enum status: {pending: 0, packaged: 1, shipped: 2}
 
   def get_discount
-    item = Item.find(item_id)
-    all_discounts = Merchant.find(item.merchant_id).bulk_discounts.order(:discount)
-    discount = nil
-    all_discounts.each { |bulk_discount| discount = bulk_discount if self.quantity >= bulk_discount.threshold }
-    return discount
+    # item = Item.find(item_id)
+    # all_discounts = Merchant.find(item.merchant_id).bulk_discounts.order(:discount)
+    # discount = nil
+    # all_discounts.each { |bulk_discount| discount = bulk_discount if self.quantity >= bulk_discount.threshold }
+    # return discount
+
   end
 end
