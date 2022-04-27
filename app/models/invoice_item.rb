@@ -20,5 +20,9 @@ class InvoiceItem < ApplicationRecord
     # all_discounts.each { |bulk_discount| discount = bulk_discount if self.quantity >= bulk_discount.threshold }
     # return discount
 
+    bulk_discounts
+    .where("bulk_discounts.threshold <= #{quantity}")
+    .order(:discount)
+    .last
   end
 end
