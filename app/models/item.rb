@@ -13,24 +13,30 @@ class Item < ApplicationRecord
   enum status: { disabled: 0, enabled: 1 }
 
   def best_sales_date
-    date_hash = Invoice.joins(:items)
-      .where("items.id=#{id}")
-      .select("invoices.created_at AS invoice_created_at, invoice_items.quantity AS quantity")
-      .group("date_trunc('day', invoices.created_at)")
-      .sum(:quantity)
-    return "no sales records available" if date_hash == {}
-    max = [{"starter date" => 0}]
-    date_hash.each_pair do |date, sum|
-      if max[0].values[0] < sum
-        max.clear
-        max << {"#{date}" => sum}
-      elsif max[0].values[0] == sum
-        max << {"#{date}" => sum}
-      end
-    end
-    # binding.pry
-    max.sort!{ |a,b| a.keys.first <=> b.keys.first }
-    Time.parse(max.last.keys.first).strftime("%Y.%m.%d")
+    # date_hash = Invoice.joins(:items)
+    #   .where("items.id=#{id}")
+    #   .select("invoices.created_at AS invoice_created_at, invoice_items.quantity AS quantity")
+    #   .group("date_trunc('day', invoices.created_at)")
+    #   .sum(:quantity)
+    # return "no sales records available" if date_hash == {}
+    # max = [{"starter date" => 0}]
+    # date_hash.each_pair do |date, sum|
+    #   if max[0].values[0] < sum
+    #     max.clear
+    #     max << {"#{date}" => sum}
+    #   elsif max[0].values[0] == sum
+    #     max << {"#{date}" => sum}
+    #   end
+    # end
+    # # binding.pry
+    # max.sort!{ |a,b| a.keys.first <=> b.keys.first }
+    # Time.parse(max.last.keys.first).strftime("%Y.%m.%d")
+    invoice_items
+     .joins(:transactions)
+     .where('transactions.result = success')
+     .select("invoice_items.quantity, date_trunc('day', invoices.created_at) AS invoice_date")
+     .group(&:invoice_date)
+     .sum(:quantity)
   end
 
 end
