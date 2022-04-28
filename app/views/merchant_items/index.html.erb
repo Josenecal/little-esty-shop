@@ -6,15 +6,15 @@
 <table>
   <tr>
     <th>Item Name</th>
+    <th>Total Revenue</th>
     <th>Best Sales Date</th>
   </tr>
 
 <% @merchant.most_popular_items.each do |item| %>
   <tr>
-    <td><%= link_to "#{item.name}", merchant_item_path(@merchant,item) %>: Total Revenue: <%= number_to_currency(item.total_revenue/100, precision: 2) %></td>
-    <td>
-      <%= item.best_sales_date %>
-    </td>
+    <td><%= link_to "#{item.name}", merchant_item_path(@merchant,item) %></td>
+    <td><%= number_to_currency(item.total_revenue/100, precision: 2) %></td>
+    <td><%= item.best_sales_date %></td>
   </tr>
 <% end %>
   </div>
@@ -41,9 +41,6 @@
         <button type="submit">Disable</button>
         <%= f.text_field :item_id, value: item.id, hidden: true %>
       <% end %></td>
-    <td>
-      <%= item.best_sales_date %>
-    </td>
     </div>
   </tr>
   <% end %>
