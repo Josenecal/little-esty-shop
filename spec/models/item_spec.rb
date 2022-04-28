@@ -42,9 +42,5 @@ RSpec.describe Item, type: :model do
       expect(@item_1.best_sales_date).to eq("2019.04.13")
     end
 
-    it "returns 'no sales records available' if no sales rerecords exist" do
-      @item_2 = @merchant_1.items.create!(name: "LG Solar Pannel", description: "2rd gen", unit_price: 8000, status: 1)
-      expect(@item_2.best_sales_date).to eq("no successful sales of this item")
-    end
   end
 end
