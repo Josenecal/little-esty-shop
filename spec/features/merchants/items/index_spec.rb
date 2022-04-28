@@ -134,9 +134,7 @@ RSpec.describe 'Merchant items index' do
       transaction = invoice_1.transactions.create!(result: "success", credit_card_number: 1234567890123456)
 
       visit merchant_items_path(merchant_1)
-    save_and_open_page
       expect(page).to have_content("2019.04.16")
-      # expect(page).to have_content("no sales records available") - No longer necessary as page does not display in TOP 5 without any sales data
     end
 
     it "Lists the most recent date of best sales if more than one date ties as max sales" do
