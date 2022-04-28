@@ -31,12 +31,20 @@ class Item < ApplicationRecord
     # # binding.pry
     # max.sort!{ |a,b| a.keys.first <=> b.keys.first }
     # Time.parse(max.last.keys.first).strftime("%Y.%m.%d")
-    invoice_items
-     .joins(:transactions)
-     .where('transactions.result = success')
-     .select("invoice_items.quantity, date_trunc('day', invoices.created_at) AS invoice_date")
-     .group(&:invoice_date)
+    best_date = invoice_items
+     .joins(invoice: :transactions)
+     .where("transactions.result = 'success'")
+     .select("invoice_items.quantity, invoices.created_at")
+     .group("date_trunc('day', invoices.created_at)")
+     .order(sum_quantity: :desc, date_trunc_day_invoices_created_at: :desc)
+     .limit(1)
      .sum(:quantity)
+     # binding.pry
+     if best_date.empty?
+       return "no successful sales of this item"
+     else
+       return best_date.keys.first.strftime("%Y.%m.%d")
+     end
   end
 
 end
