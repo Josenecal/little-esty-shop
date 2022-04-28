@@ -26,6 +26,11 @@ RSpec.describe Item, type: :model do
       @invoice_item_3 = InvoiceItem.create!(unit_price: 42, status: 1, quantity: 55, item_id: @item_1.id, invoice_id: @invoice_3.id)
       @invoice_item_4 = InvoiceItem.create!(unit_price: 42, status: 1, quantity: 75, item_id: @item_1.id, invoice_id: @invoice_4.id)
       @invoice_item_5 = InvoiceItem.create!(unit_price: 42, status: 1, quantity: 15, item_id: @item_1.id, invoice_id: @invoice_5.id)
+      @transaction1 = @invoice_1.transactions.create!(result: "success", credit_card_number:1234567890123456)
+      @transaction2 = @invoice_2.transactions.create!(result: "success", credit_card_number:1234567890123456)
+      @transaction3 = @invoice_3.transactions.create!(result: "success", credit_card_number:1234567890123456)
+      @transaction4 = @invoice_4.transactions.create!(result: "success", credit_card_number:1234567890123456)
+      @transaction5 = @invoice_5.transactions.create!(result: "success", credit_card_number:1234567890123456)
     end
 
     it'#best_sales_date returns date of most ever sales' do
@@ -39,7 +44,7 @@ RSpec.describe Item, type: :model do
 
     it "returns 'no sales records available' if no sales rerecords exist" do
       @item_2 = @merchant_1.items.create!(name: "LG Solar Pannel", description: "2rd gen", unit_price: 8000, status: 1)
-      expect(@item_2.best_sales_date).to eq("no sales records available")
+      expect(@item_2.best_sales_date).to eq("no successful sales of this item")
     end
   end
 end

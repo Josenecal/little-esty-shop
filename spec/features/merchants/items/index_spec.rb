@@ -131,10 +131,12 @@ RSpec.describe 'Merchant items index' do
       customer_1 = Customer.create!(first_name: "monkey", last_name: "wild")
       invoice_1 = customer_1.invoices.create!(status: 0, created_at: Time.parse("2019.04.16"))
       invoice_item = InvoiceItem.create!(item_id: item_1.id, invoice_id: invoice_1.id, quantity: 12, unit_price: 1300, status: 1)
+      transaction = invoice_1.transactions.create!(result: "success", credit_card_number: 1234567890123456)
 
       visit merchant_items_path(merchant_1)
+    save_and_open_page
       expect(page).to have_content("2019.04.16")
-      expect(page).to have_content("no sales records available")
+      # expect(page).to have_content("no sales records available") - No longer necessary as page does not display in TOP 5 without any sales data
     end
 
     it "Lists the most recent date of best sales if more than one date ties as max sales" do
@@ -151,6 +153,11 @@ RSpec.describe 'Merchant items index' do
       invoice_item_3 = InvoiceItem.create!(unit_price: 42, status: 1, quantity: 55, item_id: item_1.id, invoice_id: invoice_3.id)
       invoice_item_4 = InvoiceItem.create!(unit_price: 42, status: 1, quantity: 75, item_id: item_1.id, invoice_id: invoice_4.id)
       invoice_item_5 = InvoiceItem.create!(unit_price: 42, status: 1, quantity: 15, item_id: item_1.id, invoice_id: invoice_5.id)
+      transaction1 = invoice_1.transactions.create!(result: "success", credit_card_number: 1234567890123456)
+      transaction2 = invoice_2.transactions.create!(result: "success", credit_card_number: 1234567890123456)
+      transaction3 = invoice_3.transactions.create!(result: "success", credit_card_number: 1234567890123456)
+      transaction4 = invoice_4.transactions.create!(result: "success", credit_card_number: 1234567890123456)
+      transaction5 = invoice_5.transactions.create!(result: "success", credit_card_number: 1234567890123456)
       visit("merchants/#{merchant_1.id}/items")
       expect(page).to have_content("2019.04.15")
     end
